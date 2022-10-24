@@ -1,0 +1,114 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <section class="pt-8" id="instructions">
+        <h2>Want to Scare Your Friends on Halloween?</h2>
+        <div class="lead">
+            <p>Prank them with this Halloween image sender. All you need to do is:</p>
+            <ol>
+                <li>Pick an image</li>
+                <li>Write a scary message</li>
+                <li>Enter your friend's phone number</li>
+            </ol>
+        </div>
+    </section>
+
+    <form name="halloween-trick-or-treat"
+        method="post"
+        action="/">
+        {% if errors is defined %}
+        <div class="error text-center text-xl mb-8">
+            There are one or more issues with the information you supplied.
+        </div>
+        {% endif %}
+
+        <div id="pick-an-image">
+            <h2>1. Pick Your Image</h2>
+            {% if errors.image is defined %}
+                <div class="error">Please pick an image</div>
+            {% endif %}
+            <div class="images-wrapper">
+                {% for image in images %}
+                <div
+                    {% if values.image == image.label %}
+                    class="image-container selected"
+                    {% else %}
+                    class="image-container"
+                    {% endif %}
+                >
+                <input type="radio"
+                    id="pick-an-image-{{ image.label }}"
+                    name="image"
+                    value="{{ image.label }}"
+                    {% if values.image == image.label %}
+                    class="image-choice"
+                    checked="checked"
+                    {% else %}
+                        class="image-choice"
+                    {% endif %}
+                    >
+                <label for="pick-an-image-{{ image.label }}">
+                    <img src="{{ image.image }}"
+                        alt="{{ image.name }} image"
+                        class="hover:cursor-pointer">
+                </label>
+                <div class="image-label">{{ image.label }}</div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div id="write-your-message">
+        <h2>2. Write Your Message</h2>
+        <div>
+        {% if errors.message is defined %}
+            <div class="error">Please write a message for your friend</div>
+        {% endif %}
+        <textarea name="message"
+            rows="5"
+            placeholder="Write your spooky message"
+        {% if errors.message is defined %}
+            class="input-error"
+        {% endif %}
+        >{{ values.message }}</textarea>
+        <div class="mt-1 pl-1 text-slate-600">The message can be up to 320 characters in length.</div>
+        </div>
+    </div>
+
+    <div id="choose-your-friend">
+        <h2>3. Choose Your Friend</h2>
+    <div>
+    {% if errors.phone_number is defined %}
+    <div class="error">Please enter your friend's phone number in E.164 format (eg., +14155552671).</div>
+    {% endif %}
+    <div class="choose-your-friend-container">
+    <label 
+        class="font-bold" 
+        for="phone-number">Your Friend's Phone Number:</label>
+        <div>
+            <input type="tel"
+                name="phone_number"
+                id="phone-number"
+                placeholder="ex. +14155552671"
+                {% if errors.phone_number is defined %}
+                class="input-error"
+                {% endif %}
+                value="{{ values.phone_number }}">
+            <div class="mt-1 pl-1 text-slate-600">
+                The phone number must be in <a href="https://www.twilio.com/docs/glossary/what-e164">E.164 format</a>.
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<hr>
+<div class="mt-6">
+    <input type="submit"
+        name="submit"
+        value="Send Your Message">
+    <input type="reset"
+        name="reset"
+        value="Cancel">
+</div>
+</form>
+{% endblock %}
